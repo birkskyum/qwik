@@ -289,8 +289,9 @@ const getMonaco = async (): Promise<Monaco> => {
       const script = document.createElement('script');
       script.addEventListener('error', reject);
       script.addEventListener('load', () => {
+        // HACK(misko): Directly referencing to `require` fails on CloudFlare
+        const require: any = (window as any).require;
         require.config({ paths: { vs: MONACO_VS_URL } });
-
         // https://cdn.jsdelivr.net/npm/monaco-editor@0.33.0/min/vs/editor/editor.main.js
         require(['vs/editor/editor.main'], () => {
           resolve((globalThis as any).monaco);
